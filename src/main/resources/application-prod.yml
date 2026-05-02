@@ -21,7 +21,7 @@ spring:
       hibernate:
         format_sql: false       # Production mein false rakho (performance)
     hibernate:
-      ddl-auto: validate        # Production mein KABHI update/create mat use karo
+      ddl-auto: update        # Production mein KABHI update/create mat use karo
     show-sql: false             # Production mein false rakho (performance + security)
     open-in-view: false
 

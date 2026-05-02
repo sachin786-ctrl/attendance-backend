@@ -16,7 +16,6 @@ RUN mvn clean package -DskipTests
 # ============================================================
 FROM eclipse-temurin:21-jre AS runtime
 
-# Debian-style user/group banana
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser
 
 WORKDIR /app
@@ -27,7 +26,7 @@ RUN chown appuser:appgroup app.jar
 
 USER appuser
 
-EXPOSE 8080
+EXPOSE 10000
 
 ENV JAVA_OPTS="-XX:+UseContainerSupport \
                -XX:MaxRAMPercentage=75.0 \
