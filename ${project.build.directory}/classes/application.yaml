@@ -1,0 +1,90 @@
+spring:
+  application:
+    name: demo
+
+  # ✅ MySQL Database Configuration
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:project_01_db}?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=false&requireSSL=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  # ✅ JPA / Hibernate
+  jpa:
+    properties:
+      hibernate:
+        format_sql: false       # Production mein false rakho (performance)
+    hibernate:
+      ddl-auto: validate        # Production mein KABHI update/create mat use karo
+    show-sql: false             # Production mein false rakho (performance + security)
+    open-in-view: false
+
+  # ✅ OAuth2 Client Config (Google + GitHub)
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+              - openid
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            scope:
+              - user:email
+
+server:
+  port: ${PORT:8080}
+  # ✅ HTTPS/Proxy headers support (for reverse proxy like Nginx, Railway, Render, etc.)
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      cookie:
+        secure: true
+        same-site: strict
+
+logging:
+  level:
+    org.springframework.security: WARN   # Production mein DEBUG mat rakho
+    com.example.demo: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# ✅ Swagger (Production mein disable karo, ya auth ke peeche rakho)
+springdoc:
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:false}
+  swagger-ui:
+    enabled: ${SWAGGER_ENABLED:false}
+
+# ✅ JWT Configuration
+security:
+  jwt:
+    secret: ${JWT_SECRET}                              # Env var REQUIRED - hardcode mat karo
+    issuer: ${JWT_ISSUER:api.example.com}
+    access-ttl-seconds: ${JWT_ACCESS_TTL_SECONDS:3600}
+    refresh-ttl-seconds: ${JWT_REFRESH_TTL_SECONDS:604800}
+    refresh-token-cookie-name: refreshToken
+    cookie-http-only: true
+    cookie-secure: true                                # HTTPS ke liye true ZARURI hai
+    cookie-same-site: ${COOKIE_SAME_SITE:Strict}
+    cookie-domain: ${COOKIE_DOMAIN:}                  # e.g. .yourdomain.com
+
+# ✅ Frontend URL Config
+app:
+  cors:
+    front-end-url: ${FRONTEND_URL:https://yourdomain.com}
+  auth:
+    frontend:
+      success-redirect: ${FRONTEND_URL:https://yourdomain.com}/auth/success
+      failure-redirect: ${FRONTEND_URL:https://yourdomain.com}/auth/failure

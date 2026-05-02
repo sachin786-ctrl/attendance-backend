@@ -1,0 +1,22 @@
+# Java
+target/
+*.class
+*.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Node
+node_modules/
+build/
+dist/
+
+# Docker
+docker-compose.override.yml

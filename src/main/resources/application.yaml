@@ -1,0 +1,80 @@
+spring:
+  application:
+    name: demo
+
+  # ✅ MySQL Database Configuration
+  datasource:
+    url: jdbc:mysql://localhost:3306/project_01_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: MySQL@123#!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # ✅ JPA / Hibernate
+  jpa:
+    properties:
+      hibernate:
+        # ✅ FIX: dialect mat likho - Hibernate auto-detect karta hai (HHH90000025 warning fix)
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    # ✅ FIX: open-in-view disable karo (JpaWebConfiguration warning fix)
+    open-in-view: false
+
+  # ✅ OAuth2 Client Config (Google + GitHub)
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:your-google-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:your-google-client-secret}
+            scope:
+              - email
+              - profile
+              - openid
+          github:
+            client-id: ${GITHUB_CLIENT_ID:your-github-client-id}
+            client-secret: ${GITHUB_CLIENT_SECRET:your-github-client-secret}
+            scope:
+              - user:email
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.example.demo: DEBUG
+# swagger
+  springdoc:
+    api-docs:
+      enabled: true
+    swagger-ui:
+      enabled: true
+
+# ✅ JWT Configuration
+security:
+  jwt:
+    # Secret key (min 64 characters for HS512)
+    secret: ${JWT_SECRET:75JIDVqGDgdEdBI01f3QjszjMt4dNevp6N6dvIp57kWsglc9bzEWNZxDZS4ldk7exBHprY3OAKzX7HVROefnq0}
+    issuer: ${JWT_ISSUER:api.example.com}
+    # Access token: 1 hour
+    access-ttl-seconds: ${JWT_ACCESS_TTL_SECONDS:3600}
+    # Refresh token: 7 days
+    refresh-ttl-seconds: ${JWT_REFRESH_TTL_SECONDS:604800}
+    # Cookie settings
+    refresh-token-cookie-name: refreshToken
+    cookie-http-only: true
+    cookie-secure: false      # Production mein true karo (HTTPS required)
+    cookie-same-site: Lax
+    cookie-domain:            # Local dev mein blank rakho
+
+# ✅ Frontend URL Config
+app:
+  cors:
+    front-end-url: http://localhost:3000,http://localhost:5173
+  auth:
+    frontend:
+      success-redirect: http://localhost:5173/aouth/success
+      failure-redirect: http://localhost:5173/aouth/failure
